@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Setting Sun puzzle</title>
+
+<style>
+body {font-size: small; font-family: verdana, arial, sans-serif; 
+   margin: 0 auto; padding: 10px; background: grey}
+p, ul, ol {margin-top: 0}
+a {text-decoration: none; color: lightblue}
+a:hover {text-decoration: underline}
+h1 {color: white; font-size: 2em; font-weight: normal; margin: 0 0 0.7em; text-align: center}
+#board {position: relative; background: #222; display: inline-block}
+#board img {position: absolute; display: block}
+#congrats {display: none}
+button {background-color: goldenrod; border: none; color: white; padding: 10px 32px; text-align: center;
+    text-decoration: none; display: inline-block;  font-size: 16px}
+#blurb {min-width: 250px; max-width: 300px; display: inline-block; vertical-align: top; color: gainsboro; text-align: left;
+    margin-bottom: 2em}
+</style>
+
+<body style="max-width: 600px">
+
+<center>
+<p>
+    <a href='https://smallpond.ca/jim/misc/settingSun/'>Source</a> |
+    <a href='https://smallpond.ca/jim/'>License:</a>
+    <a href='https://creativecommons.org/licenses/by-nc-sa/4.0/'>CC BY-NC-SA 4.0</a>
+</p>
+</center>
+
+<div style="text-align: center">
+
+<div style="display: inline-block; width: 20px"></div>
+
+
+<div style="text-align: center; display: inline-block">
+<div id="board" style="width: 228px; height: 285px;">
+<img id="longVert1" src="longVertical.jpg" style="left: 0px; top: 0px;" draggable="false" class="ui-draggable ui-draggable-handle">
+<img id="longVert2" src="longVertical.jpg" style="left: 171px; top: 0px;" draggable="false" class="ui-draggable ui-draggable-handle">
+<img id="longVert3" src="longVertical.jpg" style="left: 0px; top: 171px;" draggable="false" class="ui-draggable ui-draggable-handle">
+<img id="longVert4" src="longVertical.jpg" style="left: 171px; top: 171px;" draggable="false" class="ui-draggable ui-draggable-handle">
+<img id="longHoriz" src="longHorizontal.jpg" style="left: 57px; top: 114px;" draggable="false" class="ui-draggable ui-draggable-handle">
+<img id="square1" src="square.jpg" style="left: 57px; top: 171px;" draggable="false">
+<img id="square2" src="square.jpg" style="left: 114px; top: 171px;" draggable="false">
+<img id="square3" src="square.jpg" style="left: 57px; top: 228px;" draggable="false">
+<img id="square4" src="square.jpg" style="left: 114px; top: 228px;" draggable="false">
+<img id="sun" src="sunSquare.jpg" style="left: 57px; top: 0px;" draggable="false">
+</div>
+<h2 id="congrats" style="display: none;">The Sun is positioned to set!<br>Congratulations</h2>
+<p style="margin-top: 4em"><button id="reset">Reset</button></p>
+</div>
+
+</div>
+
+
+<script src="jquery.js"></script>
+<script src="jquery-ui.js"></script>
+
+
+<script>
+"use strict";
+/*!
+ * jQuery UI Touch Punch 0.2.3
+ *
+ * Copyright 2011-2014, Dave Furfero
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ * Depends:
+ *  jquery.ui.widget.js
+ *  jquery.ui.mouse.js
+ */
+!function(a){function f(a,b){if(!(a.originalEvent.touches.length>1)){a.preventDefault();var c=a.originalEvent.changedTouches[0],d=document.createEvent("MouseEvents");d.initMouseEvent(b,!0,!0,window,1,c.screenX,c.screenY,c.clientX,c.clientY,!1,!1,!1,!1,0,null),a.target.dispatchEvent(d)}}if(a.support.touch="ontouchend"in document,a.support.touch){var e,b=a.ui.mouse.prototype,c=b._mouseInit,d=b._mouseDestroy;b._touchStart=function(a){var b=this;!e&&b._mouseCapture(a.originalEvent.changedTouches[0])&&(e=!0,b._touchMoved=!1,f(a,"mouseover"),f(a,"mousemove"),f(a,"mousedown"))},b._touchMove=function(a){e&&(this._touchMoved=!0,f(a,"mousemove"))},b._touchEnd=function(a){e&&(f(a,"mouseup"),f(a,"mouseout"),this._touchMoved||f(a,"click"),e=!1)},b._mouseInit=function(){var b=this;b.element.bind({touchstart:a.proxy(b,"_touchStart"),touchmove:a.proxy(b,"_touchMove"),touchend:a.proxy(b,"_touchEnd")}),c.call(b)},b._mouseDestroy=function(){var b=this;b.element.unbind({touchstart:a.proxy(b,"_touchStart"),touchmove:a.proxy(b,"_touchMove"),touchend:a.proxy(b,"_touchEnd")}),d.call(b)}}}(jQuery);
+
+var piece = [11];
+var gridUnit;
+
+function boardInit () {
+  piece[0] = new Piece($('#longVert1'), 0, 0x88, 0, 0);
+  piece[1] = new Piece($('#longVert2'), 1, 0x88, 3, 0);
+  piece[2] = new Piece($('#longVert3'), 2, 0x88, 0, 3);
+  piece[3] = new Piece($('#longVert4'), 3, 0x88, 3, 3);
+  piece[4] = new Piece($('#longHoriz'), 4, 0xc0, 1, 2);
+  piece[5] = new Piece($('#square1'), 5, 0x80, 1, 3);
+  piece[6] = new Piece($('#square2'), 6, 0x80, 2, 3);
+  piece[7] = new Piece($('#square3'), 7, 0x80, 1, 4);
+  piece[8] = new Piece($('#square4'), 8, 0x80, 2, 4);
+  piece[9] = new Piece($('#sun'), 9, 0xcc, 1, 0);
+}
+
+function pieceShift (piece, bitsRight) {
+  piece.location >>= bitsRight;
+}
+
+function boardGet (piece) {
+  var board = 0;
+  for (var i = 0; i < 10; i++)
+    board |= piece[i].location;
+  return board;
+}
+
+function Piece (img, n, shape, x, y) {
+  this.setPosition = function() {
+    this.location = this.shape << (4 * 4);
+    for (var i = 0; i < this.x; i++)
+      pieceShift(this, 1);
+    for (var i = 0; i < this.y; i++)
+      pieceShift(this, 4);
+  }
+
+  this.imgObj = img;
+  this.shape = shape;
+  this.id = n;
+  this.x = x;
+  this.y = y;
+  this.setPosition();
+  $(this.imgObj).css({left: x * gridUnit, top: y * gridUnit});
+  $.data(img[0], 'myObj', this);
+}
+
+function assessBoard () {
+  for (var i = 0; i < 10; i++)
+    piece[i].setPosition();
+  var board = boardGet(piece);
+  for (var i = 0; i < 10; i++) {
+    var boardWithoutPiece = (board & ~piece[i].location) | 0xf00000f;
+    piece[i].nLeft = 0;
+    while (((piece[i].location & 0x888880) == 0) && (((piece[i].location << (piece[i].nLeft+1)) & boardWithoutPiece) == 0))  // can move left
+      piece[i].nLeft++;
+    piece[i].nRight = 0;
+    while (((piece[i].location & 0x111110) == 0) && (((piece[i].location >> (piece[i].nRight+1)) & boardWithoutPiece) == 0))  // can move right
+      piece[i].nRight++;
+    piece[i].nUp = 0;
+    while (((piece[i].location & 0xf00000) == 0) && (((piece[i].location << ((piece[i].nUp+1)*4)) & boardWithoutPiece) == 0))  // can move up
+      piece[i].nUp++;
+    piece[i].nDown = 0;
+    while (((piece[i].location & 0x0000f0) == 0) && (((piece[i].location >> ((piece[i].nDown+1)*4)) & boardWithoutPiece) == 0))  // can down
+      piece[i].nDown++;
+    if ((piece[i].nLeft > 0) || (piece[i].nRight > 0) || (piece[i].nUp > 0) || (piece[i].nDown > 0)) {
+      piece[i].freedom = 0;
+      if ((piece[i].nLeft > 0) || (piece[i].nRight > 0))
+        piece[i].freedom |= 1;
+      if ((piece[i].nUp > 0) || (piece[i].nDown > 0))
+        piece[i].freedom |= 2;
+    }
+  }
+  for (var i = 0; i < 10; i++) {
+    $(piece[i].imgObj).attr('draggable', false);
+    if ((piece[i].nLeft > 0) || (piece[i].nRight > 0) || (piece[i].nUp > 0) || (piece[i].nDown > 0)) {
+      $(piece[i].imgObj).draggable({
+        drag: function(event, ui) {
+          var obj = $.data(this, 'myObj');
+          var newx = obj.x;
+          var newy = obj.y;
+          if ((obj.freedom == 2) ||
+              ((obj.freedom == 3) && (Math.abs(ui.position.top - ui.originalPosition.top) > Math.abs(ui.position.left - ui.originalPosition.left)))) {
+            ui.position.top = Math.min(Math.max(gridUnit * (obj.y - obj.nUp), ui.position.top), gridUnit * (obj.y + obj.nDown));
+            ui.position.left = ui.originalPosition.left;
+            newy = Math.floor((ui.position.top + gridUnit / 2) / gridUnit);
+          } else {
+            ui.position.top = ui.originalPosition.top;
+            ui.position.left = Math.min(Math.max(gridUnit * (obj.x - obj.nLeft), ui.position.left), gridUnit * (obj.x + obj.nRight));
+            newx = Math.floor((ui.position.left + gridUnit / 2) / gridUnit);
+          }
+          if ((newx != obj.x) || (newy != obj.y)) {
+            obj.x = newx;
+            obj.y = newy;
+            $(this).css({left: obj.x * gridUnit, top: obj.y * gridUnit});
+            ui.originalPosition.left = obj.x * gridUnit;
+            ui.originalPosition.top = obj.y * gridUnit;
+            assessBoard();
+          }
+        }, stop: function(event, ui) {
+          var obj = $.data(this, 'myObj');
+          if ((obj.freedom == 2) ||
+              ((obj.freedom == 3) && (Math.abs(ui.position.top - ui.originalPosition.top) > Math.abs(ui.position.left - ui.originalPosition.left))))
+            obj.y = Math.floor((ui.position.top + gridUnit / 2) / gridUnit);
+          else
+            obj.x = Math.floor((ui.position.left + gridUnit / 2) / gridUnit);
+          $(this).css({left: obj.x * gridUnit, top: obj.y * gridUnit});
+          assessBoard();
+        }
+      });
+    }
+  }
+  if ((piece[9].x == 1) && (piece[9].y == 3))
+    $('#congrats').show();
+  else
+    $('#congrats').hide();
+}
+
+$(window).on('load', function() {  // wait until images are loaded
+
+gridUnit = $('#square1').height();
+var boardWidth = gridUnit * 4;
+var boardHeight = gridUnit * 5;
+$('#board').width(boardWidth).height(boardHeight);
+$('#reset').click(function() {
+  boardInit();
+  assessBoard();
+});
+
+boardInit();
+assessBoard();
+
+});
+</script>
+
+<div style="position: absolute; top: 0; left: 0; opacity: 0.1"><img src="Setting%20Sun%20puzzle,%20online%20and%20playable%20(with%20solution)_files/collect.png"></div></body></html>
